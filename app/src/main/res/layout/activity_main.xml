@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/show_weather_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal_16"
+        android:text="показать погоду"
+        app:layout_constraintBaseline_toBaselineOf="@+id/city_name_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/city_name_editText"
+        tools:visibility="gone" />
+
+    <EditText
+        android:id="@+id/city_name_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small_8"
+        android:hint="Название города"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/show_weather_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_small_8"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="@+id/wind_textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="@+id/current_temp_textView"
+        app:srcCompat="@drawable/weather_condition" />
+
+    <TextView
+        android:id="@+id/city_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small_8"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Санкт-Петербург"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/current_temp_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:layout_marginTop="@dimen/margin_small_8"
+        android:textAlignment="center"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/current_weather_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city_name_textView"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="21°" />
+
+    <TextView
+        android:id="@+id/current_weather_textView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:maxLines="2"
+        app:layout_constraintBottom_toTopOf="@+id/comfort_temp_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_temp_textView"
+        tools:text="Преимущественно облачно" />
+
+    <TextView
+        android:id="@+id/comfort_temp_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:layout_marginTop="@dimen/margin_small_8"
+        android:text="@{weather.comfortTemp}"
+        app:layout_constraintBottom_toTopOf="@+id/humidity_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_weather_textView"
+        tools:text="Температура комфорта: 20°" />
+
+    <TextView
+        android:id="@+id/humidity_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:text="@{weather.humidity}"
+        app:layout_constraintBottom_toTopOf="@+id/pressure_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comfort_temp_textView"
+        tools:text="Влажность: 66%" />
+
+    <TextView
+        android:id="@+id/pressure_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:text="@{weather.pressure}"
+        app:layout_constraintBottom_toTopOf="@+id/wind_textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humidity_textView"
+        tools:text="Давление: 761 мм" />
+
+    <TextView
+        android:id="@+id/wind_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_normal_16"
+        android:layout_marginBottom="@dimen/margin_normal_16"
+        android:text="@{weather.wind}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pressure_textView"
+        tools:text="Ветер: Юго-западный 3.0 м/с" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="pressure_textView,wind_textView,current_weather_textView,humidity_textView,comfort_temp_textView,current_temp_textView"
+        tools:layout_editor_absoluteX="411dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
