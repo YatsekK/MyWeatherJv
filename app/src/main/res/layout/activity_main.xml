@@ -6,37 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/show_weather_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_normal_16"
-        android:text="показать погоду"
-        app:layout_constraintBaseline_toBaselineOf="@+id/city_name_editText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/city_name_editText"
-        tools:visibility="gone" />
-
     <EditText
         android:id="@+id/city_name_editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small_8"
-        android:hint="Название города"
-        android:inputType="textPersonName"
+        android:layout_margin="@dimen/margin_normal_16"
+        android:hint="@string/enter_city_name_hint"
+        android:inputType="textShortMessage"
+        android:textSize="24sp"
+        android:gravity="center_horizontal"
+        app:layout_constraintBaseline_toBaselineOf="@id/city_name_textView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/show_weather_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:visibility="gone" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/margin_small_8"
+        android:layout_margin="@dimen/margin_tiny_4"
+        android:contentDescription="@string/content_descrioption"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="@+id/wind_textView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,9 +39,9 @@
         android:id="@+id/city_name_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_small_8"
+        android:layout_margin="@dimen/margin_normal_16"
         android:textSize="24sp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

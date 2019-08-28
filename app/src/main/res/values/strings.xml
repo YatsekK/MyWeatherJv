@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Weather Jv</string>
+    <string name="content_descrioption">Current weather image view</string>
+    <string name="enter_city_name_hint">Введите название города</string>
 </resources>
