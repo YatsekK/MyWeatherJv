@@ -1,16 +1,21 @@
 package yatsekk.example.com.myweatherjv;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final String ID = "61eb58c265fe5d33c3595a0fea9cc7c4";
+    private final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=" + ID + "&lang=ru&units=metric";
 
     TextView cityTextView;
     EditText cityEditText;
@@ -21,19 +26,27 @@ public class MainActivity extends AppCompatActivity {
     TextView pressureTextView;
     TextView windTextView;
 
-    Weather weather = new Weather("Владивосток", 23,
-            "Облачно, без осадков и солнечно с осадками", "Температура комфорта: 21°",
-            "Влажность: 66%", "Давление: 760 мм.", "Ветер: Юго-восточный, 3 м/с");
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setViews();
-        showWeather();
     }
 
-    private void showWeather() {
+    private class WeatherAsyncTask extends AsyncTask<String, Void, Weather> {
+        @Override
+        protected Weather doInBackground(String... urls) {
+            Weather weather = QueryUtils.fetchWeatherData(urls[0]);
+            return weather;
+        }
+
+        @Override
+        protected void onPostExecute(Weather weather) {
+            showWeather(weather);
+        }
+    }
+
+    private void showWeather(Weather weather) {
         currentTempTextView.setText(Integer.toString(weather.getCurrentTemp()) + "°");
         currentWeatherTextView.setText(weather.getCurrentWeather());
         comfortTempTextView.setText(weather.getComfortTemp());
@@ -56,16 +69,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        return  true;
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.show_weather) {
-            cityTextView.setText(cityEditText.getText());
+            String chosenCity = cityEditText.getText().toString();
             cityTextView.setVisibility(View.VISIBLE);
             cityEditText.setVisibility(View.GONE);
+            String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
+            WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask();
+            weatherAsyncTask.execute(weatherUrl);
         }
         return super.onOptionsItemSelected(item);
     }
