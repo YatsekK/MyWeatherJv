@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.net.URL;
-
 public class MainActivity extends AppCompatActivity {
 
     private final String ID = "61eb58c265fe5d33c3595a0fea9cc7c4";
@@ -47,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showWeather(Weather weather) {
+        cityTextView.setText(weather.getCityName());
         currentTempTextView.setText(Integer.toString(weather.getCurrentTemp()) + "°");
-        currentWeatherTextView.setText(weather.getCurrentWeather());
-        comfortTempTextView.setText(weather.getComfortTemp());
-        humidityTextView.setText(weather.getHumidity());
-        pressureTextView.setText(weather.getPressure());
-        windTextView.setText(weather.getWind());
+        currentWeatherTextView.setText("Сейчас на улице: " + weather.getCurrentWeather());
+        comfortTempTextView.setText("Минимальная температура: " + weather.getComfortTemp());
+        humidityTextView.setText("Влажность: " + weather.getHumidity() + "%");
+        pressureTextView.setText("Давление: " + weather.getPressure());
+        windTextView.setText("Ветер: " + weather.getWind() + "м/с");
     }
 
     private void setViews() {
