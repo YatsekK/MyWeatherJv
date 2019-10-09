@@ -1,4 +1,4 @@
-package yatsekk.example.com.myweatherjv;
+package yatsekk.example.com.myweatherjv.utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,20 +12,22 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import yatsekk.example.com.myweatherjv.Weather;
+
 public class QueryUtils {
 
     private QueryUtils() {
     }
 
     public static Weather fetchWeatherData(String stringUrl) {
-
         URL url = makeUrl(stringUrl);
-
-        String jsonString = makeHTTPRequest(url);
-
-        Weather weather = extractFeatureFromJson(jsonString);
-
-        return weather;
+        String jsonString = null;
+        try {
+            jsonString = makeHTTPRequest(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return extractFeatureFromJson(jsonString);
     }
 
     private static URL makeUrl(String stringUrl) {
@@ -40,12 +42,15 @@ public class QueryUtils {
         return url;
     }
 
-    private static String makeHTTPRequest(URL url) {
+    private static String makeHTTPRequest(URL url) throws IOException {
         String jsonResponse = "";
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setRequestMethod("GET");
             urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
@@ -53,6 +58,12 @@ public class QueryUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
         }
         return jsonResponse;
     }
@@ -82,7 +93,7 @@ public class QueryUtils {
             JSONArray jsonArray = jsonObject.getJSONArray("weather");
             String currentWeather = jsonArray.getJSONObject(0).getString("description");
             String currentCity = jsonObject.getString("name");
-            Double currentTempDouble = jsonObject.getJSONObject("main").getDouble("temp");
+            double currentTempDouble = jsonObject.getJSONObject("main").getDouble("temp");
             int currentTemp = (int) Math.round(currentTempDouble);
             String comfortTemp = jsonObject.getJSONObject("main").getString("temp_min");
             String humidity = jsonObject.getJSONObject("main").getString("humidity");
