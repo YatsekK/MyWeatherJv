@@ -36,7 +36,7 @@ public class CurrentWeatherFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weather_current, container, false);
+        View view = inflater.inflate(R.layout.fragment_current_weather, container, false);
         setViews(view);
         return view;
     }
