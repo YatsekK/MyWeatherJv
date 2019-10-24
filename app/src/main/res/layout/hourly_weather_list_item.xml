@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/hourly_hour_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small_8"
             android:textSize="@dimen/textSize_big_24"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/hourly_temp_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small_8"
             android:textSize="@dimen/textSize_big_24"
@@ -50,7 +50,7 @@
 
         <TextView
             android:id="@+id/hourly_weather_condition_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small_8"
             android:layout_marginTop="@dimen/margin_small_8"
@@ -64,11 +64,11 @@
 
         <TextView
             android:id="@+id/hourly_weather_wind_TextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small_8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/hourly_weather_condition_textView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/hourly_weather_condition_textView"
             app:layout_constraintTop_toBottomOf="@id/hourly_weather_condition_textView"
