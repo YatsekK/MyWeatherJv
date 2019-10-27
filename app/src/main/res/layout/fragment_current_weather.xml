@@ -11,10 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_normal_16"
+        android:gravity="center_horizontal"
         android:hint="@string/enter_city_name_hint"
         android:inputType="textShortMessage"
         android:textSize="24sp"
-        android:gravity="center_horizontal"
         app:layout_constraintBaseline_toBaselineOf="@id/city_name_textView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,5 +125,25 @@
         app:barrierDirection="end"
         app:constraint_referenced_ids="pressure_textView,wind_textView,current_weather_textView,humidity_textView,comfort_temp_textView,current_temp_textView"
         tools:layout_editor_absoluteX="411dp" />
+
+    <TextView
+        android:id="@+id/sensor_temperature_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big_24"
+        app:layout_constraintBottom_toTopOf="@id/sensor_humidity_textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wind_textView" />
+
+    <TextView
+        android:id="@+id/sensor_humidity_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_big_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sensor_temperature_textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
