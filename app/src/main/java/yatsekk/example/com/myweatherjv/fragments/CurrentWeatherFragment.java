@@ -1,5 +1,10 @@
 package yatsekk.example.com.myweatherjv.fragments;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import java.util.Objects;
 
 import yatsekk.example.com.myweatherjv.R;
 import yatsekk.example.com.myweatherjv.Weather;
@@ -33,12 +40,19 @@ public class CurrentWeatherFragment extends Fragment {
     private TextView humidityTextView;
     private TextView pressureTextView;
     private TextView windTextView;
+    private TextView sensorTemperatureTextView;
+    private TextView sensorHumidityTextView;
+
+    private SensorManager sensorManager;
+    private Sensor sensorTemperature;
+    private Sensor sensorHumidity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_current_weather, container, false);
         setViews(view);
+        getSensors();
         return view;
     }
 
@@ -51,6 +65,15 @@ public class CurrentWeatherFragment extends Fragment {
         humidityTextView = view.findViewById(R.id.humidity_textView);
         pressureTextView = view.findViewById(R.id.pressure_textView);
         windTextView = view.findViewById(R.id.wind_textView);
+        sensorTemperatureTextView = view.findViewById(R.id.sensor_temperature_textView);
+        sensorHumidityTextView = view.findViewById(R.id.sensor_humidity_textView);
+    }
+
+    private void getSensors() {
+        Context context = Objects.requireNonNull(getActivity()).getApplicationContext();
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensorTemperature = sensorManager != null ? sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) : null;
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
     }
 
     private class WeatherAsyncTask extends AsyncTask<String, Void, Weather> {
@@ -103,5 +126,53 @@ public class CurrentWeatherFragment extends Fragment {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        sensorManager.registerListener(listenerTemperature, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(listenerHumidity, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(listenerTemperature, sensorTemperature);
+        sensorManager.unregisterListener(listenerHumidity, sensorHumidity);
+    }
+
+    private SensorEventListener listenerTemperature = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            showTemperatureSensor(event);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    private SensorEventListener listenerHumidity = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            showHumiditySensor(event);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    private void showTemperatureSensor(SensorEvent event) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Temperature Sensor value = ").append(event.values[0]).append("°C");
+        sensorTemperatureTextView.setText(stringBuilder);
+    }
+
+    private void showHumiditySensor(SensorEvent event) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Humidity Sensor value = ").append(event.values[0]).append("%");
+        sensorHumidityTextView.setText(stringBuilder);
     }
 }
