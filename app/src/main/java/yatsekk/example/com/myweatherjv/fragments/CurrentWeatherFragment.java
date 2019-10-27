@@ -10,14 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import yatsekk.example.com.myweatherjv.R;
-import yatsekk.example.com.myweatherjv.utils.QueryUtils;
 import yatsekk.example.com.myweatherjv.Weather;
+import yatsekk.example.com.myweatherjv.utils.QueryUtils;
 
 public class CurrentWeatherFragment extends Fragment {
 
@@ -90,12 +91,16 @@ public class CurrentWeatherFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.show_weather) {
-            String chosenCity = cityEditText.getText().toString();
-            cityTextView.setVisibility(View.VISIBLE);
-            cityEditText.setVisibility(View.GONE);
-            String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
-            CurrentWeatherFragment.WeatherAsyncTask weatherAsyncTask = new CurrentWeatherFragment.WeatherAsyncTask();
-            weatherAsyncTask.execute(weatherUrl);
+            if (cityEditText.getText().length() != 0) {
+                String chosenCity = cityEditText.getText().toString();
+                cityTextView.setVisibility(View.VISIBLE);
+                cityEditText.setVisibility(View.GONE);
+                String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
+                WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask();
+                weatherAsyncTask.execute(weatherUrl);
+            } else {
+                Toast.makeText(getActivity(), R.string.enter_city_name, Toast.LENGTH_LONG).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

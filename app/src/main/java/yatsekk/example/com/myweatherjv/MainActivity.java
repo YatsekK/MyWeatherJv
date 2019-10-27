@@ -26,10 +26,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // getting bottom navigation view and attaching the listener
         BottomNavigationView navigationView = findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
-
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        Fragment fragment = new CurrentWeatherFragment();
-//        fragmentManager.beginTransaction().add(R.id.fragment, fragment).commit();
     }
 
     private boolean loadFragment(Fragment fragment) {
