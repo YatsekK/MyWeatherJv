@@ -1,5 +1,7 @@
 package yatsekk.example.com.myweatherjv.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import yatsekk.example.com.myweatherjv.R;
 import yatsekk.example.com.myweatherjv.Weather;
+import yatsekk.example.com.myweatherjv.utils.CityCache;
 import yatsekk.example.com.myweatherjv.utils.QueryUtils;
 
 public class CurrentWeatherFragment extends Fragment {
@@ -33,6 +37,10 @@ public class CurrentWeatherFragment extends Fragment {
     private TextView humidityTextView;
     private TextView pressureTextView;
     private TextView windTextView;
+
+    private CityCache cityCache;
+
+    private Activity activity;
 
     @Nullable
     @Override
@@ -85,6 +93,13 @@ public class CurrentWeatherFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        activity = getActivity();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        cityCache = new CityCache(getActivity());
     }
 
     @Override
@@ -93,15 +108,25 @@ public class CurrentWeatherFragment extends Fragment {
         if (itemThatWasClickedId == R.id.show_weather) {
             if (cityEditText.getText().length() != 0) {
                 String chosenCity = cityEditText.getText().toString();
-                cityTextView.setVisibility(View.VISIBLE);
-                cityEditText.setVisibility(View.GONE);
-                String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
-                WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask();
-                weatherAsyncTask.execute(weatherUrl);
+                cityCache.saveCity(chosenCity);
+                showForecast(chosenCity);
+                InputMethodManager imm = (InputMethodManager) activity
+                        .getSystemService(activity.getApplicationContext().INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(cityEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             } else {
-                Toast.makeText(getActivity(), R.string.enter_city_name, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.city_from_cache, Toast.LENGTH_LONG).show();
+                String chosenCity = cityCache.getSavedCity();
+                showForecast(chosenCity);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showForecast(String chosenCity) {
+        cityTextView.setVisibility(View.VISIBLE);
+        cityEditText.setVisibility(View.GONE);
+        String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
+        WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask();
+        weatherAsyncTask.execute(weatherUrl);
     }
 }
