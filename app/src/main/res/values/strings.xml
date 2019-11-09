@@ -1,10 +1,14 @@
 <resources>
-    <string name="app_name">My Weather Jv</string>
+    <string name="app_name">Weather forecast</string>
     <string name="content_description">Current weather image view</string>
     <string name="enter_city_name_hint">Введите название города</string>
-    <string name="menuItem_show_weather">Show weather</string>
+    <string name="menuItem_show_weather">Показать прогноз</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="enter_city_name">Пожалуйста, введите название города.</string>
+    <!-- <string name="hello_blank_fragment">Hello blank fragment</string> -->
+    <string name="city_from_cache">Вы не ввели город и поэтому прогноз показан для ранее указанного города.</string>
+    <string name="one_week_forecast">One week forecast</string>
+    <string name="item_current_weather">Current weather</string>
+    <string name="item_24hour_forecast">24hour forecast</string>
+    <string name="item_week_forecast">Week forecast</string>
 </resources>

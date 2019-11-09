@@ -64,26 +64,26 @@ public class HourlyWeatherAdapter extends RecyclerView.Adapter<HourlyWeatherAdap
         return weatherList.size();
     }
 
-    public static class HourlyWeatherViewHolder extends RecyclerView.ViewHolder {
+    static class HourlyWeatherViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView hourTextView;
-        private final TextView hourlyTempTextview;
-        private final TextView hourlyConditionTextview;
-        private final TextView hourlyWindTextview;
+        private final TextView hourlyTempTextView;
+        private final TextView hourlyConditionTextView;
+        private final TextView hourlyWindTextView;
 
         private HourlyWeatherViewHolder(@NonNull View itemView) {
             super(itemView);
             hourTextView = itemView.findViewById(R.id.hourly_hour_textView);
-            hourlyTempTextview = itemView.findViewById(R.id.hourly_temp_textView);
-            hourlyConditionTextview = itemView.findViewById(R.id.hourly_weather_condition_textView);
-            hourlyWindTextview = itemView.findViewById(R.id.hourly_weather_wind_TextView);
+            hourlyTempTextView = itemView.findViewById(R.id.hourly_temp_textView);
+            hourlyConditionTextView = itemView.findViewById(R.id.hourly_weather_condition_textView);
+            hourlyWindTextView = itemView.findViewById(R.id.hourly_weather_wind_TextView);
         }
 
-        public void applyWeatherData(Weather weather) {
+        void applyWeatherData(Weather weather) {
             hourTextView.setText(weather.getTimeHour());
-            hourlyTempTextview.setText(weather.getCurrentTemp() + "°");
-            hourlyConditionTextview.setText(weather.getCurrentWeather());
-            hourlyWindTextview.setText(weather.getWind());
+            hourlyTempTextView.setText(weather.getCurrentTemp() + "°");
+            hourlyConditionTextView.setText(weather.getCurrentWeather());
+            hourlyWindTextView.setText(weather.getWind());
         }
     }
 }
