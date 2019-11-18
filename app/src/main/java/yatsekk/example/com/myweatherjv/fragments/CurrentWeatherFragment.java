@@ -1,8 +1,6 @@
 package yatsekk.example.com.myweatherjv.fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,15 +17,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import yatsekk.example.com.myweatherjv.MainActivity;
 import yatsekk.example.com.myweatherjv.R;
-import yatsekk.example.com.myweatherjv.Weather;
+import yatsekk.example.com.myweatherjv.utils.ApiFactory;
+import yatsekk.example.com.myweatherjv.utils.ApiService;
 import yatsekk.example.com.myweatherjv.utils.CityCache;
-import yatsekk.example.com.myweatherjv.utils.QueryUtils;
+import yatsekk.example.com.myweatherjv.utils.pojo.MainModel;
 
 public class CurrentWeatherFragment extends Fragment {
 
     private final String ID = "61eb58c265fe5d33c3595a0fea9cc7c4";
-    private final String WEATHER_BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=" + ID + "&lang=ru&units=metric";
+    private final String UNITS = "metric";
+    private final String LANG = "ru";
 
     private TextView cityTextView;
     private EditText cityEditText;
@@ -40,7 +46,8 @@ public class CurrentWeatherFragment extends Fragment {
 
     private CityCache cityCache;
 
-    private Activity activity;
+    private ApiFactory apiFactory = ApiFactory.getInstance();
+    private ApiService apiService = apiFactory.getApiService();
 
     @Nullable
     @Override
@@ -61,26 +68,18 @@ public class CurrentWeatherFragment extends Fragment {
         windTextView = view.findViewById(R.id.wind_textView);
     }
 
-    private class WeatherAsyncTask extends AsyncTask<String, Void, Weather> {
-        @Override
-        protected Weather doInBackground(String... urls) {
-            return QueryUtils.fetchWeatherData(urls[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Weather weather) {
-            showWeather(weather);
-        }
-    }
-
-    private void showWeather(Weather weather) {
-        cityTextView.setText(weather.getCityName());
-        currentTempTextView.setText(weather.getCurrentTemp() + "°");
-        currentWeatherTextView.setText(String.format("Сейчас на улице: %s", weather.getCurrentWeather()));
-        comfortTempTextView.setText(String.format("Минимальная температура: %s", weather.getComfortTemp()));
-        humidityTextView.setText(String.format("Влажность: %s%%", weather.getHumidity()));
-        pressureTextView.setText(String.format("Давление: %s", weather.getPressure()));
-        windTextView.setText(String.format("Ветер: %s м/с", weather.getWind()));
+    private void showWeather(MainModel mainModel) {
+        cityTextView.setText(mainModel.getName());
+        currentTempTextView.setText(String.format("%s°C", mainModel.getMain().getTemp()));
+        currentWeatherTextView.setText(String.format("Сейчас на улице: %s",
+                mainModel.getWeatherResponses().get(0).getDescription()));
+        comfortTempTextView.setText(String.format("Минимальная температура: %s",
+                mainModel.getMain().getTempMin()));
+        humidityTextView.setText(String.format("Влажность: %s%%",
+                mainModel.getMain().getHumidity()));
+        pressureTextView.setText(String.format("Давление: %s",
+                mainModel.getMain().getPressure()));
+        windTextView.setText(String.format("Ветер: %s м/с", mainModel.getWind().getSpeed()));
     }
 
     @Override
@@ -93,13 +92,14 @@ public class CurrentWeatherFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        activity = getActivity();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        cityCache = new CityCache(getActivity());
+        if (getActivity()!= null) {
+            cityCache = new CityCache(getActivity());
+        }
     }
 
     @Override
@@ -110,9 +110,11 @@ public class CurrentWeatherFragment extends Fragment {
                 String chosenCity = cityEditText.getText().toString();
                 cityCache.saveCity(chosenCity);
                 showForecast(chosenCity);
-                InputMethodManager imm = (InputMethodManager) activity
-                        .getSystemService(activity.getApplicationContext().INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(cityEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                        .getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(cityEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
             } else {
                 Toast.makeText(getActivity(), R.string.city_from_cache, Toast.LENGTH_LONG).show();
                 String chosenCity = cityCache.getSavedCity();
@@ -125,8 +127,19 @@ public class CurrentWeatherFragment extends Fragment {
     private void showForecast(String chosenCity) {
         cityTextView.setVisibility(View.VISIBLE);
         cityEditText.setVisibility(View.GONE);
-        String weatherUrl = String.format(WEATHER_BASE_URL, chosenCity);
-        WeatherAsyncTask weatherAsyncTask = new WeatherAsyncTask();
-        weatherAsyncTask.execute(weatherUrl);
+        apiService.getResponse(chosenCity, ID, LANG, UNITS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<MainModel>() {
+                    @Override
+                    public void accept(MainModel mainModel) throws Exception {
+                        showWeather(mainModel);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(getActivity(), R.string.error_loading_data, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }

@@ -11,4 +11,5 @@
     <string name="item_current_weather">Current weather</string>
     <string name="item_24hour_forecast">24hour forecast</string>
     <string name="item_week_forecast">Week forecast</string>
+    <string name="error_loading_data">Ошибка получения данных.</string>
 </resources>
